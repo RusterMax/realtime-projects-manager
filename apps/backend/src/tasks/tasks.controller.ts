@@ -9,7 +9,6 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
-  Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -22,87 +21,52 @@ export class TasksController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createTaskDto: CreateTaskDto) {
-    try {
-      const task = await this.tasksService.create(createTaskDto);
-      return {
-        success: true,
-        data: task,
-        message: 'Task created successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const task = await this.tasksService.create(createTaskDto);
+    return {
+      success: true,
+      data: task,
+      message: 'Task created successfully',
+    };
   }
 
   @Get()
   async findAll() {
-    try {
-      const tasks = await this.tasksService.findAll();
-      return {
-        success: true,
-        data: tasks,
-        message: 'Tasks retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const tasks = await this.tasksService.findAll();
+    return {
+      success: true,
+      data: tasks,
+      message: 'Tasks retrieved successfully',
+    };
   }
 
   @Get('project/:projectId')
   async findByProject(@Param('projectId', new ParseUUIDPipe()) projectId: string) {
-    try {
-      const tasks = await this.tasksService.findByProject(projectId);
-      return {
-        success: true,
-        data: tasks,
-        message: 'Tasks retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const tasks = await this.tasksService.findByProject(projectId);
+    return {
+      success: true,
+      data: tasks,
+      message: 'Tasks retrieved successfully',
+    };
   }
 
   @Get('user/:userId')
   async findByUser(@Param('userId', new ParseUUIDPipe()) userId: string) {
-    try {
-      const tasks = await this.tasksService.findByUser(userId);
-      return {
-        success: true,
-        data: tasks,
-        message: 'Tasks retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const tasks = await this.tasksService.findByUser(userId);
+    return {
+      success: true,
+      data: tasks,
+      message: 'Tasks retrieved successfully',
+    };
   }
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const task = await this.tasksService.findOne(id);
-      return {
-        success: true,
-        data: task,
-        message: 'Task retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const task = await this.tasksService.findOne(id);
+    return {
+      success: true,
+      data: task,
+      message: 'Task retrieved successfully',
+    };
   }
 
   @Patch(':id')
@@ -110,35 +74,34 @@ export class TasksController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
-    try {
-      const task = await this.tasksService.update(id, updateTaskDto);
-      return {
-        success: true,
-        data: task,
-        message: 'Task updated successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const task = await this.tasksService.update(id, updateTaskDto);
+    return {
+      success: true,
+      data: task,
+      message: 'Task updated successfully',
+    };
+  }
+
+  @Patch(':id/status')
+  async updateStatus(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body('status') status: string,
+  ) {
+    const task = await this.tasksService.updateStatus(id, status);
+    return {
+      success: true,
+      data: task,
+      message: 'Task status updated successfully',
+    };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.tasksService.remove(id);
-      return {
-        success: true,
-        message: 'Task deleted successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    await this.tasksService.remove(id);
+    return {
+      success: true,
+      message: 'Task deleted successfully',
+    };
   }
 }

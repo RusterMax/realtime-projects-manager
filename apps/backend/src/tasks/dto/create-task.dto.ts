@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsOptional, IsUUID, IsEnum } from 'class-validator';
-import { TaskStatus } from '../entities/task.entity';
+import { TaskStatus } from '../../entities/task.entity';
 
 export class CreateTaskDto {
   @IsString()

@@ -21,70 +21,42 @@ export class ProjectsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createProjectDto: CreateProjectDto) {
-    try {
-      const project = await this.projectsService.create(createProjectDto);
-      return {
-        success: true,
-        data: project,
-        message: 'Project created successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const project = await this.projectsService.create(createProjectDto);
+    return {
+      success: true,
+      data: project,
+      message: 'Project created successfully',
+    };
   }
 
   @Get()
   async findAll() {
-    try {
-      const projects = await this.projectsService.findAll();
-      return {
-        success: true,
-        data: projects,
-        message: 'Projects retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const projects = await this.projectsService.findAll();
+    return {
+      success: true,
+      data: projects,
+      message: 'Projects retrieved successfully',
+    };
   }
 
   @Get(':id')
   async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const project = await this.projectsService.findOne(id);
-      return {
-        success: true,
-        data: project,
-        message: 'Project retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const project = await this.projectsService.findOne(id);
+    return {
+      success: true,
+      data: project,
+      message: 'Project retrieved successfully',
+    };
   }
 
   @Get(':id/tasks')
   async getProjectTasks(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      const project = await this.projectsService.findOne(id);
-      return {
-        success: true,
-        data: project.tasks || [],
-        message: 'Project tasks retrieved successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const project = await this.projectsService.findOne(id);
+    return {
+      success: true,
+      data: project.tasks || [],
+      message: 'Project tasks retrieved successfully',
+    };
   }
 
   @Patch(':id')
@@ -92,35 +64,21 @@ export class ProjectsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateProjectDto: UpdateProjectDto,
   ) {
-    try {
-      const project = await this.projectsService.update(id, updateProjectDto);
-      return {
-        success: true,
-        data: project,
-        message: 'Project updated successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    const project = await this.projectsService.update(id, updateProjectDto);
+    return {
+      success: true,
+      data: project,
+      message: 'Project updated successfully',
+    };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    try {
-      await this.projectsService.remove(id);
-      return {
-        success: true,
-        message: 'Project deleted successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    await this.projectsService.remove(id);
+    return {
+      success: true,
+      message: 'Project deleted successfully',
+    };
   }
 }

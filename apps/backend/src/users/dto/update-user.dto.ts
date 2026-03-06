@@ -1,4 +1,3 @@
-// backend/src/users/dto/update-user.dto.ts
 import { IsEmail, IsOptional, IsString, MinLength, MaxLength } from 'class-validator';
 
 export class UpdateUserDto {

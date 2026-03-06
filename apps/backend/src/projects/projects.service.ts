@@ -1,38 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Project } from '../entities/project.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @InjectRepository(Project)
+    private projectRepository: Repository<Project>,
+  ) {}
 
-  async create(createProjectDto: CreateProjectDto) {
-    return this.prisma.project.create({
-      data: createProjectDto,
-      include: {
-        user: true,
-        tasks: true,
-      },
+  async create(createProjectDto: CreateProjectDto): Promise<Project> {
+    const project = this.projectRepository.create(createProjectDto);
+    return this.projectRepository.save(project);
+  }
+
+  async findAll(): Promise<Project[]> {
+    return this.projectRepository.find({
+      relations: ['user', 'tasks'],
     });
   }
 
-  async findAll() {
-    return this.prisma.project.findMany({
-      include: {
-        user: true,
-        tasks: true,
-      },
-    });
-  }
-
-  async findOne(id: string) {
-    const project = await this.prisma.project.findUnique({
+  async findOne(id: string): Promise<Project> {
+    const project = await this.projectRepository.findOne({
       where: { id },
-      include: {
-        user: true,
-        tasks: true,
-      },
+      relations: ['user', 'tasks', 'tasks.user'],
     });
 
     if (!project) {
@@ -42,29 +36,21 @@ export class ProjectsService {
     return project;
   }
 
-  async update(id: string, updateProjectDto: UpdateProjectDto) {
-    try {
-      return await this.prisma.project.update({
-        where: { id },
-        data: updateProjectDto,
-        include: {
-          user: true,
-          tasks: true,
-        },
-      });
-    } catch (error) {
-      throw new NotFoundException(`Project with ID ${id} not found`);
-    }
+  async update(id: string, updateProjectDto: UpdateProjectDto): Promise<Project> {
+    const project = await this.findOne(id);
+    Object.assign(project, updateProjectDto);
+    return this.projectRepository.save(project);
   }
 
-  async remove(id: string) {
-    try {
-      await this.prisma.project.delete({
-        where: { id },
-      });
-      return { deleted: true };
-    } catch (error) {
-      throw new NotFoundException(`Project with ID ${id} not found`);
-    }
+  async remove(id: string): Promise<void> {
+    const project = await this.findOne(id);
+    await this.projectRepository.remove(project);
+  }
+
+  async findByUser(userId: string): Promise<Project[]> {
+    return this.projectRepository.find({
+      where: { userId },
+      relations: ['tasks'],
+    });
   }
 }

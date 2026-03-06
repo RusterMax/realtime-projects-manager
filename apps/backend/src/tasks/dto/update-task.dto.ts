@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsEnum, IsUUID } from 'class-validator';
-import { Status } from '@prisma/client';
+import { TaskStatus } from '../../entities/task.entity';
 
 export class UpdateTaskDto {
   @IsString()
@@ -10,11 +10,11 @@ export class UpdateTaskDto {
   @IsOptional()
   description?: string;
 
-  @IsEnum(Status)
+  @IsEnum(TaskStatus)
   @IsOptional()
-  status?: Status;
+  status?: TaskStatus;
 
   @IsUUID()
   @IsOptional()
-  assignedTo?: string;
+  userId?: string;
 }
